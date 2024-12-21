@@ -1,0 +1,50 @@
+[
+    {
+        "name": "Understanding Quantum Computing",
+        "author": "John Doe",
+        "date_created": "2023-01-15",
+        "date_updated": "2023-06-10",
+        "abstract": "An introduction to quantum computing and its applications.",
+        "domain": "Computer Science"
+    },
+    {
+        "name": "The Future of Artificial Intelligence",
+        "author": "Jane Smith",
+        "date_created": "2022-09-12",
+        "date_updated": "2023-02-20",
+        "abstract": "Exploring the advancements and ethical considerations in AI.",
+        "domain": "Artificial Intelligence"
+    },
+    {
+        "name": "Climate Change and Global Warming",
+        "author": "Emily White",
+        "date_created": "2021-11-05",
+        "date_updated": "2022-07-22",
+        "abstract": "A comprehensive analysis of climate change impacts.",
+        "domain": "Environmental Science"
+    },
+    {
+        "name": "Advancements in Renewable Energy",
+        "author": "Michael Green",
+        "date_created": "2020-03-10",
+        "date_updated": "2021-11-19",
+        "abstract": "Examining the progress in solar and wind energy technologies.",
+        "domain": "Energy"
+    },
+    {
+        "name": "Exploring the Human Genome",
+        "author": "Sarah Blue",
+        "date_created": "2019-07-25",
+        "date_updated": "2023-03-30",
+        "abstract": "Insights into genetic research and its implications for healthcare.",
+        "domain": "Biology"
+    },
+    {
+        "name": "Space Exploration and Colonization",
+        "author": "Chris Armstrong",
+        "date_created": "2023-04-01",
+        "date_updated": "2023-10-15",
+        "abstract": "Challenges and opportunities in interplanetary travel.",
+        "domain": "Astronomy"
+    }
+]
