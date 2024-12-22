@@ -41,6 +41,7 @@ function close_pop() {
 
 function clear_input(input_name) {
   document.getElementById(input_name).value = "";
+  deleteDialog();
 }
 // Themes
 
@@ -166,7 +167,7 @@ function clipboard_copy() {
 
 async function registerUser(username, password) {
   try {
-      const response = await fetch("https://92f1-77-89-208-34.ngrok-free.app/api/authen/auth/register", {
+      const response = await fetch("https://36bd-77-89-208-34.ngrok-free.app/api/authen/auth/register", {
           method: "POST",
           headers: {
               "Content-Type": "application/json",
@@ -202,7 +203,7 @@ function register_proxy() {
 
 async function generateOtp(username, password) {
   try {
-      const response = await fetch("https://92f1-77-89-208-34.ngrok-free.app/api/authen/2fa/generateOtp", {
+      const response = await fetch("https://36bd-77-89-208-34.ngrok-free.app/api/authen/2fa/generateOtp", {
           method: "POST",
           headers: {
               "Content-Type": "application/json",
@@ -229,13 +230,15 @@ async function generateOtp(username, password) {
 
 async function authenticateUser(username, otpCode) {
   try {
-      const response = await fetch("https://92f1-77-89-208-34.ngrok-free.app/api/authen/2fa/authenticate", {
+      const response = await fetch("https://36bd-77-89-208-34.ngrok-free.app/api/authen/2fa/authenticate", {
           method: "POST",
           headers: {
               "Content-Type": "application/json",
           },
           body: JSON.stringify({ username, totp_code: otpCode }),
       });
+
+      console.log("Raw response:", response);
 
       if (!response.ok) {
           const errorData = await response.json();
@@ -244,8 +247,18 @@ async function authenticateUser(username, otpCode) {
           return null;
       }
 
-      const tokens = await response.json();
-      console.log("Authentication successful. Tokens:", tokens);
+      const responseData = await response.json();
+      console.log("Parsed response:", responseData);
+
+      // Extract tokens from nested structure
+      const tokens = responseData.tokens;
+      if (!tokens || !tokens.access || !tokens.refresh) {
+          console.error("Tokens missing in response:", responseData);
+          alert("Authentication failed: Missing tokens in server response.");
+          return null;
+      }
+
+
       return tokens;
   } catch (error) {
       console.error("Error during authentication:", error);
@@ -281,4 +294,27 @@ async function loginProxy() {
       // Redirect to a new page or update the UI to reflect login success
       window.location.href = "/"; // Replace with your desired page
   }
+}
+
+// When the page is fully loaded, apply the animation class
+window.onload = function() {
+  const mascot = document.getElementById("test_svg");
+  mascot.classList.add("animate");
+};
+
+function deleteDialog() {
+  var searchInput = document.getElementById("search-input");
+
+  // Check if search-input is empty
+  if (searchInput && searchInput.value.trim() === "") {
+      // Display the dialogue box and text container
+      document.getElementById("dialogue-box__text-container").style.display = "none";
+      document.getElementById("dialogue-box").style.display = "none";
+  }
+}
+
+function savePDFLink(pdfUrl) {
+  // Store the clicked PDF URL in localStorage
+  localStorage.setItem('pdfLink', pdfUrl);
+  // Redirect to the second page where the PDF will be shown
 }

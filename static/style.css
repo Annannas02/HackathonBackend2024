@@ -1243,12 +1243,30 @@ img[src=""] {
     margin-top: 20px;
     align-items: center;
 }
-#test_svg{
-    transform: rotate(-45deg);
+#test_svg {
     height: 300px;
     position: fixed;
     bottom: -30px;
-    right: -30px;
+    right: -300px; /* Initially offscreen to the right */
+    transform: rotate(0deg); /* Start with no rotation */
+    transition: transform 1s ease-in-out;
+}
+
+/* Define the rotate and move animation */
+@keyframes rotateIn {
+    0% {
+        right: -300px;  /* Start offscreen to the right */
+        transform: rotate(0deg); /* No rotation at start */
+    }
+    100% {
+        right: -30px; /* Final position */
+        transform: rotate(-45deg); /* Final rotation */
+    }
+}
+
+/* Add animation class to trigger the animation */
+#test_svg.animate {
+    animation: rotateIn 1.5s ease-in-out forwards; /* Apply the animation */
 }
 
 .article-box__svg{
@@ -1266,7 +1284,7 @@ img[src=""] {
     bottom: 250px;
     right: 60px;
     transform: scaleX(-1);
-
+display: none;
 }
 #dialogue-box__text-container{
     width: 154px;
@@ -1277,5 +1295,6 @@ img[src=""] {
     font-size: 15px;
     text-align: center;
     font-style: italic;
+    display: none;
 
 }

@@ -11,7 +11,7 @@ app = Flask(__name__, template_folder='templates')
 CORS(app)
 
 
-API_BASE = "https://92f1-77-89-208-34.ngrok-free.app/api/"
+API_BASE = "https://36bd-77-89-208-34.ngrok-free.app/api/"
 
 @app.route('/')
 def home():
@@ -26,7 +26,7 @@ def register():
     if not username or not password:
         return jsonify({"error": "Username and password are required"}), 400
 
-    api_url = "https://92f1-77-89-208-34.ngrok-free.app/api/authen/auth/register"
+    api_url = "https://36bd-77-89-208-34.ngrok-free.app/api/authen/auth/register"
     response = requests.post(api_url, json={"username": username, "password": password})
 
     if response.ok:
@@ -46,7 +46,7 @@ def login():
 
     # Step 1: Generate OTP
     otp_response = requests.post(
-        "https://92f1-77-89-208-34.ngrok-free.app/api/authen/2fa/generateOtp",
+        "https://36bd-77-89-208-34.ngrok-free.app/api/authen/2fa/generateOtp",
         json={"username": username, "password": password},
     )
     if otp_response.status_code != 200:
@@ -56,7 +56,7 @@ def login():
 
     # Step 2: Authenticate User
     auth_response = requests.post(
-        "https://92f1-77-89-208-34.ngrok-free.app/api/authen/2fa/authenticate",
+        "https://36bd-77-89-208-34.ngrok-free.app/api/authen/2fa/authenticate",
         json={"username": username, "totp_code": totp_code},
     )
     if auth_response.status_code == 200:
@@ -77,7 +77,9 @@ def email():
 def recommend():
     return render_template('recommend.html')
 
-
+@app.route('/pdf')
+def pdf():
+    return render_template('pdf.html')
 
 if __name__ == '__main__':
     if os.environ.get("WERKZEUG_RUN_MAIN") == "true":

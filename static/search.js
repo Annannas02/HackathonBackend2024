@@ -3,137 +3,188 @@ document.addEventListener("DOMContentLoaded", () => {
     const domainFilter = document.getElementById("article-domain-options"); // Reference the dropdown
     const resultsContainer = document.getElementById("results-container");
 
-    async function fetchFilteredArticles(query, category) {
-        const accessToken = localStorage.getItem("access_token"); // Retrieve access token from localStorage
-        if (!accessToken) {
-            alert("Access token is missing. Please log in.");
-            return [];
+    async function fetchFilteredArticles(token, payload) {
+        // Ensure the payload is valid
+        if (!payload || !payload.title || !payload.category_id) {
+            throw new Error("Payload must include 'title' and 'category_id'.");
         }
-
+    
+        const url = "https://36bd-77-89-208-34.ngrok-free.app/api/articles/search/";
+    
         try {
-            const response = await fetch("https://92f1-77-89-208-34.ngrok-free.app/api/articles/fetch/", {
+            // Perform the fetch request
+            const response = await fetch(url, {
                 method: "POST",
                 headers: {
+                    "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${accessToken}`, // Include the access token in the header
                 },
-                body: JSON.stringify({
-                    query, // The search query string
-                    category, // The selected category/domain
-                }),
+                body: JSON.stringify(payload),
             });
-
+    
+            // Check if the response is successful
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error("Failed to fetch articles:", errorData);
-                alert(`Failed to fetch articles: ${errorData.message || "Unknown error"}`);
-                return [];
+                console.error("Error fetching articles:", errorData);
+                throw new Error(`Error fetching articles: ${errorData.message || "Unknown error"}`);
             }
-
+    
+            // Parse and return the JSON response
             const articles = await response.json();
-            console.log("Filtered articles fetched successfully:", articles);
+    
+            // Log the first entry in the response to the console
+            if (Array.isArray(articles) && articles.length > 0) {
+                console.log("First article:", articles[0]);
+            } else {
+                console.log("No articles returned.");
+            }
+    
             return articles;
         } catch (error) {
-            console.error("Error fetching articles from backend:", error);
-            alert("An error occurred while fetching articles. Please try again later.");
-            return [];
+            console.error("Error during fetch:", error);
+            throw new Error("An error occurred while fetching articles. Check the console for details.");
         }
     }
 
-        async function sendSearchRequest(query, domain) {
-            try {
-                // Make a POST request to the backend
-                document.getElementById("homepage-content-frame").style.height="auto";
-                const response = await fetch('http://localhost:5000/search', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        query, // The search query string
-                        domain, // The selected domain
-                    }),
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
-                }
-
-                console.log("Search request sent successfully!");
-            } catch (error) {
-                console.error("Error sending search request to backend:", error);
-            }
+    async function articleSearch() {
+        const query = searchInput.value.trim(); // Get the trimmed search query
+        
+        const selectedDomain = domainFilter.value || "All"; // Default category to "All" if not selected
+        
+        const accessToken = localStorage.getItem("access_token"); // Retrieve the token from local storage
+        if (!accessToken) {
+            alert("Access token is missing. Please log in.");
+            console.error("Access token missing.");
+            return;
         }
-
-        async function fetchUpdatedArticles() {
-            try {
-                // Fetch the updated articles from mockData.json
-                const response = await fetch('./static/mockData.json'); // Adjust path if needed
-                if (!response.ok) {
-                    throw new Error(`Error fetching articles: ${response.status}`);
-                }
-                return await response.json();
-            } catch (error) {
-                console.error("Error fetching updated articles from JSON:", error);
-                return [];
-            }
-        }
-
-        async function articleSearch() {
-            const query = searchInput.value.trim(); // Get the trimmed search query
-            const selectedDomain = domainFilter.value; // Get the selected domain/category
     
+        // Prepare the payload
+        const payload = {
+            title: query || "a", // Ensure title is non-null
+            category_id: translateCategoryToInt(domainFilter.value), // Pass the selected category
+        };
+
+        function translateCategoryToInt(category) {
+            // Map of categories to integers
+            const categoryMap = {
+                "Physics": 1,
+                "Mathematics": 2,
+                "Computer Science": 3,
+                "Quantitative Biology": 4,
+                "Statistics": 6,
+            };
+        
+            // Return the corresponding integer, or default to "All"
+            return categoryMap[category] || "All";
+        }
+    
+        try {
             // Fetch filtered articles from the backend
-            const filteredArticles = await fetchFilteredArticles(query, selectedDomain);
+            const filteredArticles = await fetchFilteredArticles(accessToken, payload);
     
             // Display the results
             displayResults(filteredArticles);
+        } catch (error) {
+            console.error("Error fetching articles:", error);
+            alert("An error occurred while fetching articles. Check the console for details.");
+        }
+    }
+
+    function displayResults(results) {
+        resultsContainer.innerHTML = ""; // Clear previous results
+        document.getElementById("homepage-content-frame").style.height="auto";
+
+        if (results.length === 0) {
+            const textOptions = [
+                "Zero results. But hey, you’re still searching—and that’s something!",
+                "Well, that didn’t quite go as planned. But hey, it’s a fresh start!",
+                "Looks like the universe isn’t cooperating this time. Keep looking!",
+                "Well, this is awkward. No results this time. At least you tried!",
+                "Not a single match, huh? Well, that’s a first.",
+                "Hmm, nothing here. I guess you’ll have to try harder next time."
+            ];
+
+            const randomText = textOptions[Math.floor(Math.random() * textOptions.length)];
+            const divElement = document.getElementById("dialogue-box__text-container");
+            document.getElementById("dialogue-box__text-container").style.display = "block";
+            document.getElementById("dialogue-box").style.display = "block";
+
+            if (divElement) {
+                divElement.textContent = randomText;
+            }
+
+            return;
         }
 
-        function displayResults(results) {
-            resultsContainer.innerHTML = ""; // Clear previous results
-    
-            if (results.length === 0) {
-                resultsContainer.innerHTML = "<div class='no-results'>No results found</div>";
-                
-                return;
+        const textOptions = [
+            "Here are the results. No need to thank me!",
+            "Well, well, look who finally found something interesting.",
+            "Well, aren’t you clever? Took you long enough to find this.",
+            "A rare moment of brilliance. Let’s see if these articles are worth it.",
+            "You’re welcome. Another brilliant find, just as I promised."
+        ];
+
+        const randomText = textOptions[Math.floor(Math.random() * textOptions.length)];
+        const divElement = document.getElementById("dialogue-box__text-container");
+        divElement.style.display = "block";
+
+        document.getElementById("dialogue-box").style.display = "block";
+        divElement.textContent = randomText;
+
+        results.forEach(item => {
+            const resultBox = document.createElement("div");
+            resultBox.classList.add("random-box");
+            console.log("id ",item.domain);
+            const categorySVG = getCategorySVG(getRandomDomain(item.domain) || "Default");
+
+            resultBox.innerHTML = `
+                <div class="article-box">
+                    <div class="article-title">${item.title}</div>
+                    <hr class="article-line">
+                    <div class="article-abstract text">${item.summary}</div>
+                    <div class="article-date">
+    Created: ${formatDate(item.publish_date)} | Updated: ${formatDate(item.modify_date)}
+</div>
+                    ${categorySVG}
+                </div>
+            `;
+
+            function getRandomDomain(domain) {
+                // List of predefined domains
+                const domains = [
+                    "Physics",
+                    "Mathematics",
+                    "Computer Science",
+                    "Quantitative Biology",
+                    "Quantitative Finance",
+                    "Statistics",
+                    "Economics",
+                    "Engineering"
+                ];
+            
+                // If the provided domain exists in the list, use it
+                if (domains.includes(domain)) {
+                    return domain;
+                }
+            
+                // If the provided domain is not in the list, return a random one
+                const randomIndex = Math.floor(Math.random() * domains.length);
+                return domains[randomIndex];
             }
-            const textOptions = [
-                "Hello, world!",
-                "Welcome to my website!",
-                "Have a great day!",
-                "JavaScript is awesome!",
-                "Keep smiling!",
-                "Coding is fun!"
-            ];
-        
-            // Select a random text from the options
-            const randomText = textOptions[Math.floor(Math.random() * textOptions.length)];
-        
-            // Get the div element by its ID
-            const divElement = document.getElementById("dialogue-box__text-container");
-        
-            // Check if the div exists
-                divElement.textContent = randomText;
-            results.forEach(item => {
-                const resultBox = document.createElement("div");
-                resultBox.classList.add("random-box");
-    
-                const categorySVG = getCategorySVG(item.domain || "Default");
-    
-                resultBox.innerHTML = `
-                    <div class="article-box">
-                        <div class="article-title">${item.name}</div>
-                        <hr class="article-line">
-                        <div class="article-abstract text">${item.abstract}</div>
-                        <div class="article-date">Created: ${item.date_created} | Updated: ${item.date_updated}</div>
-                        ${categorySVG}
-                    </div>
-                `;
-    
-                resultsContainer.appendChild(resultBox);
-            });
-        }
+            
+
+            function formatDate(dateString) {
+                if (!dateString) return "N/A"; // Handle cases where the date is missing
+                const date = new Date(dateString);
+                const day = String(date.getDate()).padStart(2, '0'); // Ensure 2-digit day
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`; // Format as DD/MM/YYYY
+            }
+
+            resultsContainer.appendChild(resultBox);
+        });
+    }
 
         function getCategorySVG(category) {
             switch (category) {
@@ -193,6 +244,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Attach event listeners
         searchInput.addEventListener("input", articleSearch); // Listen for search input
+        searchInput.addEventListener("input", deleteDialog); // Listen for search input
         domainFilter.addEventListener("change", articleSearch); // Listen for dropdown changes
+        
     });
     const manualSearch = debounceSearch(articleSearch, 300);

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embed PDF</title>
+    <style>
+        body, html {
+            margin: 0;
+            height: 100%;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            // Retrieve the PDF link from localStorage
+            var pdfUrl = localStorage.getItem('pdfLink');
+            if (pdfUrl) {
+                // Set the iframe's src to the PDF URL
+                document.getElementById('pdfIframe').src = pdfUrl;
+            } else {
+                alert('No PDF link found!');
+            }
+        }
+    </script>
+</head>
+<body>
+    <iframe id="pdfIframe" title="Embedded PDF"></iframe>
+</body>
+</html>
