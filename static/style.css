@@ -1108,6 +1108,7 @@ img[src=""] {
 
 .pop__complete-form__text {
     font-size: 20px;
+    cursor: pointer;
 }
 
 .pop__complete-form__icon {
@@ -1176,6 +1177,7 @@ img[src=""] {
     border: solid 2px var(--main-color-3);
     overflow-y: scroll;
     cursor: pointer;
+    position: relative;
 }
 
 .article-title {
@@ -1249,3 +1251,31 @@ img[src=""] {
     right: -30px;
 }
 
+.article-box__svg{
+
+    position: absolute;
+  padding: 30px;
+    opacity: 0.2;
+    margin: auto;
+    inset: 0;
+
+}
+#dialogue-box{
+    height: 150px;
+    position: fixed;
+    bottom: 250px;
+    right: 60px;
+    transform: scaleX(-1);
+
+}
+#dialogue-box__text-container{
+    width: 154px;
+    height: 105px;
+    position: fixed;
+    bottom: 288px;
+    right: 66px;
+    font-size: 15px;
+    text-align: center;
+    font-style: italic;
+
+}

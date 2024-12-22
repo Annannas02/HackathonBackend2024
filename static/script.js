@@ -164,7 +164,121 @@ function clipboard_copy() {
   navigator.clipboard.writeText(text_value);
 }
 
+async function registerUser(username, password) {
+  try {
+      const response = await fetch("https://92f1-77-89-208-34.ngrok-free.app/api/authen/auth/register", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+      });
 
+      if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Registration failed:", errorData);
+          alert(`Registration failed: ${errorData.message || "Unknown error"}`);
+          return;
+      }
 
+      alert("Registration successful!");
+  } catch (error) {
+      console.error("Error during registration:", error);
+      alert("An error occurred during registration. Please try again later.");
+  }
+}
 
+function register_proxy() {
+  const username = document.getElementById("input-name").value.trim();
+  const password = document.getElementById("input-password").value.trim();
 
+  if (!username || !password) {
+      alert("Please fill in both fields.");
+      return;
+  }
+
+  registerUser(username, password);
+}
+
+async function generateOtp(username, password) {
+  try {
+      const response = await fetch("https://92f1-77-89-208-34.ngrok-free.app/api/authen/2fa/generateOtp", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+          const errorData = await response.json();
+          console.error("OTP generation failed:", errorData);
+          alert(`Failed to generate OTP: ${errorData.message || "Unknown error"}`);
+          return null;
+      }
+
+      const { totp_code } = await response.json();
+      console.log("OTP generated successfully:", totp_code);
+      return totp_code;
+  } catch (error) {
+      console.error("Error generating OTP:", error);
+      alert("An error occurred while generating OTP. Please try again later.");
+      return null;
+  }
+}
+
+async function authenticateUser(username, otpCode) {
+  try {
+      const response = await fetch("https://92f1-77-89-208-34.ngrok-free.app/api/authen/2fa/authenticate", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, totp_code: otpCode }),
+      });
+
+      if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Authentication failed:", errorData);
+          alert(`Authentication failed: ${errorData.message || "Unknown error"}`);
+          return null;
+      }
+
+      const tokens = await response.json();
+      console.log("Authentication successful. Tokens:", tokens);
+      return tokens;
+  } catch (error) {
+      console.error("Error during authentication:", error);
+      alert("An error occurred during authentication. Please try again later.");
+      return null;
+  }
+}
+
+async function loginProxy() {
+  const username = document.getElementById("input-name-login").value.trim();
+  const password = document.getElementById("input-password-login").value.trim();
+
+  if (!username || !password) {
+      alert("Please fill in both fields.");
+      return;
+  }
+
+  // Step 1: Generate OTP and authenticate
+  const otpCode = await generateOtp(username, password);
+  if (!otpCode) {
+      return; // Stop if OTP generation failed
+  }
+
+  const tokens = await authenticateUser(username, otpCode);
+  if (tokens) {
+      // Step 2: Store tokens and proceed
+      localStorage.setItem("access_token", tokens.access);
+      localStorage.setItem("refresh_token", tokens.refresh);
+      alert("Login successful!");
+      console.log("Access Token:", tokens.access);
+      console.log("Refresh Token:", tokens.refresh);
+
+      // Redirect to a new page or update the UI to reflect login success
+      window.location.href = "/"; // Replace with your desired page
+  }
+}
