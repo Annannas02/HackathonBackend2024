@@ -41,7 +41,7 @@
 
             </div>
 
-            <a class="menu-button pressed-button" href="{{ url_for('home') }}">
+            <a class="menu-button " href="{{ url_for('home') }}">
                 <svg class="menu-button-logo svg-style" version="1.1" viewBox="0 30.64 547.6 486.31"
                     xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -52,7 +52,8 @@
                 <div class="text menu-button-text">Search</div>
             </a>
 
-            <a class="menu-button" href="{{ url_for('recommend') }}">
+
+            <a class="menu-button pressed-button" href="{{ url_for('recommend') }}">
                 <svg class="menu-button-logo svg-style" viewBox="1.41 7.17 252.9 241.37" xml:space="preserve"
                     xmlns="http://www.w3.org/2000/svg">
                     <g transform="translate(1.4066 1.4066) scale(2.81)">
@@ -63,7 +64,6 @@
                 </svg>
                 <div class="text menu-button-text">For You</div>
             </a>
-
 
             <div class="menu-button pop-button" onclick="open_pop('login-frame')" id="account-button">
                 <svg class="menu-button-logo svg-style" viewBox="204.8 204.8 614.4 614.4">
@@ -123,18 +123,7 @@
         <div id="homepage-content-frame">
 
 
-            <div class="text" id="search-bar__text">Research Paper Search </div>
-            <div>
-                <div class="input-frame">
-                    <input type="text" class="input-search" id="search-input" oninput="manualSearch()">
-
-                    <svg class="input-clear svg-style" onclick="clear_input('search-input'), manualSearch()"
-                        viewBox="176.46 176.46 670.3 670.3" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="m195.2 195.2a64 64 0 0 1 90.496 0l226.3 226.3 226.3-226.3a64 64 0 0 1 90.496 90.496l-226.3 226.3 226.3 226.3a64 64 0 0 1-90.496 90.496l-226.3-226.3-226.3 226.3a64 64 0 0 1-90.496-90.496l226.3-226.3-226.3-226.3a64 64 0 0 1 0-90.496z" />
-                    </svg>
-
-                </div>
+            <div class="text" id="search-bar__text">Recommendations</div>         
                 <div id="article-domain__container">
                     <div class="text">Domain: </div>
                     <select id="article-domain-options" class="input-filter" onchange="manualSearch()">
@@ -147,11 +136,15 @@
                         <option value="Astronomy">Astronomy</option>
                     </select>
                 </div>
-            </div>
+
             <div id="results-container">
+<div class="article-box"></div>
+<div class="article-box"></div>
+<div class="article-box"></div>
+<div class="article-box"></div>
 
             </div>
-      
+
         </div>
     </div>
 

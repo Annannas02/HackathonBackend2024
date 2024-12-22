@@ -1175,6 +1175,7 @@ img[src=""] {
     border-radius: 0.5rem;
     border: solid 2px var(--main-color-3);
     overflow-y: scroll;
+    cursor: pointer;
 }
 
 .article-title {
@@ -1216,7 +1217,7 @@ img[src=""] {
 #article-domain-options {
     border: none;
     background: none;
-    width: 100px;
+    width: 175px;
     height: 30px;
     outline: none;
     color: var(--input-color);
@@ -1240,3 +1241,11 @@ img[src=""] {
     margin-top: 20px;
     align-items: center;
 }
+#test_svg{
+    transform: rotate(-45deg);
+    height: 300px;
+    position: fixed;
+    bottom: -30px;
+    right: -30px;
+}
+

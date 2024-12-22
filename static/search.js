@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    async function manualSearch() {
+    async function articleSearch() {
         const query = searchInput.value.trim(); // Get the trimmed search query
         const selectedDomain = domainFilter.value; // Get the selected domain
 
@@ -82,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Attach event listeners
-    searchInput.addEventListener("input", manualSearch); // Listen for search input
-    domainFilter.addEventListener("change", manualSearch); // Listen for dropdown changes
+    searchInput.addEventListener("input", articleSearch); // Listen for search input
+    domainFilter.addEventListener("change", articleSearch); // Listen for dropdown changes
 });
+const manualSearch = debounceSearch(articleSearch, 300);

@@ -21,6 +21,10 @@ def book():
 def email():
     return render_template('email-assist.html')
 
+@app.route('/recommendations')
+def recommend():
+    return render_template('recommend.html')
+
 if __name__ == '__main__':
     if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
         webbrowser.open('http://127.0.0.1:5000/')
