@@ -25,3 +25,10 @@ media
 *.bak 
 *.crt
 *.key
+
+docker-compose.yml
+
+*__init__.py
+
+arxiv-metadata-oai-snapshot.json
+arxiv_data.psv
