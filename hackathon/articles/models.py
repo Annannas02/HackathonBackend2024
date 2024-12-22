@@ -3,6 +3,7 @@ from categories.models import Categories
 from subcategories.models import Subcategories
 
 class Articles(models.Model):
+    identifier = models.CharField(max_length=40)
     title = models.CharField(max_length=200)
     authors = models.CharField(max_length=200)
     publish_date = models.DateTimeField()

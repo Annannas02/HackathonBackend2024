@@ -5,4 +5,5 @@ from articles.models import Articles
 class Articlesession(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     article_id = models.ForeignKey(Articles, on_delete=models.CASCADE)
-    time = models.DateTimeField()
+    timestamp = models.DateTimeField()
+    time_spent = models.IntegerField(default=0)
